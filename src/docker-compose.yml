@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # FastAPI 백엔드
+  backend:
+    build: ./backend
+    container_name: robot-monitoring-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # InfluxDB (선택사항 - 나중에 실제 DB 연동 시 사용)
+  influxdb:
+    image: influxdb:2.7
+    container_name: robot-monitoring-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=robot-fleet
+      - DOCKER_INFLUXDB_INIT_BUCKET=robot-data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-token1
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    restart: unless-stopped
+
+volumes:
+  influxdb-data:
