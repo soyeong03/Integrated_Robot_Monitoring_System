@@ -403,16 +403,5 @@ python main.py
 
 ---
 
-## 📄 라이선스
-
-개인 프로젝트 - MIT License
-
----
-
-## 🤝 기여
-
-이슈나 제안사항이 있으시면 GitHub Issues를 통해 알려주세요.
-
----
 
 **Figma 디자인 원본**: https://www.figma.com/design/Rd35WutOVXGQpid39d44bh/Robot-Monitoring-System
