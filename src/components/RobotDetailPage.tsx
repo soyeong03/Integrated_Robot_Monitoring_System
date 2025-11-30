@@ -32,7 +32,7 @@ export function RobotDetailPage({ robots }: RobotDetailPageProps) {
     } else if (robot.type === 'drone') {
       setSelectedSensor('battery');
     }
-  }, [robot]);
+  }, [robot?.type]); // 수정 : 화면 업데이트마다 센서 트렌드 초기화 문제
 
   // Generate mock time-series data
   useEffect(() => {
