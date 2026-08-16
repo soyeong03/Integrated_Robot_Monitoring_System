@@ -1,11 +1,12 @@
 package com.robotmonitoring.system.controller;
 
 import com.robotmonitoring.system.dto.RobotResponse;
+import com.robotmonitoring.system.dto.TimeSeriesPoint;
+import com.robotmonitoring.system.dto.TimeSeriesResponse;
 import com.robotmonitoring.system.service.RobotService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +29,12 @@ public class RobotController {
     public RobotResponse findById(@PathVariable("robotId") String robotId){
         return robotService.findById(robotId);
     }
+
+    @GetMapping("/{robotId}/timeseries")
+    public TimeSeriesResponse findTimeSeries(@PathVariable("robotId") String robotId,
+                                             @RequestParam(defaultValue = "1") @Min(1) @Max(168) int hours){
+        return robotService.findTimeSeries(robotId, hours);
+    }
+
 }
 

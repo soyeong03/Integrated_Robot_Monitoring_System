@@ -3,12 +3,17 @@ package com.robotmonitoring.system.service;
 import com.robotmonitoring.system.domain.RobotStatus;
 import com.robotmonitoring.system.domain.RobotType;
 import com.robotmonitoring.system.dto.RobotResponse;
+import com.robotmonitoring.system.dto.TimeSeriesPoint;
+import com.robotmonitoring.system.dto.TimeSeriesResponse;
 import com.robotmonitoring.system.exception.RobotNotFoundException;
+import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class RobotService {
@@ -38,6 +43,46 @@ public class RobotService {
         }
 
         throw new RobotNotFoundException("Robot " + robotId + " not found");
+    }
+
+    public TimeSeriesResponse findTimeSeries(String robotId, int hour){
+
+        RobotResponse robot = findById(robotId);
+
+        List<TimeSeriesPoint> temperature = generateTemperatureSeries((Double) robot.sensors().get("temperature"), hour);
+        List<TimeSeriesPoint> efficiency = null;
+
+        TimeSeriesResponse t = new TimeSeriesResponse(temperature, efficiency);
+        return t;
+    }
+
+    private List<TimeSeriesPoint> generateTemperatureSeries(
+            double baseTemperature,
+            int hours
+    ) {
+        List<TimeSeriesPoint> result = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        int pointCount = hours * 60;
+
+        for (int i = pointCount - 1; i >= 0; i--) {
+            LocalDateTime time = now.minusMinutes(i);
+
+            double variation =
+                    ThreadLocalRandom.current().nextDouble(-2.0, 2.0);
+
+            double temperature = baseTemperature + variation;
+
+            result.add(
+                    new TimeSeriesPoint(
+                            time.toString(),
+                            temperature
+                    )
+            );
+        }
+
+        return result;
     }
 
     private RobotResponse robotArm(
