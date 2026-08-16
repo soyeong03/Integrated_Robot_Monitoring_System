@@ -3,6 +3,7 @@ package com.robotmonitoring.system.service;
 import com.robotmonitoring.system.domain.RobotStatus;
 import com.robotmonitoring.system.domain.RobotType;
 import com.robotmonitoring.system.dto.RobotResponse;
+import com.robotmonitoring.system.exception.RobotNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,17 @@ public class RobotService {
                 drone("DR002", "Drone 2", "TASK-3002", "외부작업B", "Parrot", lastUpdate, 64.0, 21.0, 85.0, 85.0, 6.5, 980.0, 37.5651, 126.9895, 245.0),
                 drone("DR003", "Drone 3", "TASK-3003", "점검", "Autel", lastUpdate, 71.0, 16.8, 89.0, 150.0, 5.1, 1560.0, 37.5702, 126.9920, 420.0)
         );
+    }
+
+    public RobotResponse findById(String robotId){
+        List<RobotResponse> robotList = findAll();
+        for (int i = 0; i < robotList.size(); i++) {
+            if (robotList.get(i).id().equals(robotId)){
+                return robotList.get(i);
+            }
+        }
+
+        throw new RobotNotFoundException("Robot " + robotId + " not found");
     }
 
     private RobotResponse robotArm(
