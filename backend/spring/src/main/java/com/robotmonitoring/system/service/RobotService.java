@@ -28,6 +28,16 @@ public class RobotService {
         );
     }
 
+    public RobotResponse findById(String robotId){
+        List<RobotResponse> robotList = findAll();
+        for (int i = 0; i < robotList.size(); i++) {
+            if (robotList.get(i).id().equals(robotId)){
+                return robotList.get(i);
+            }
+        }
+        return null;
+    }
+
     private RobotResponse robotArm(
             String id, String name, String taskId, String group, String manufacturer,
             String line, String floor, String lastUpdate, double temperature, double efficiency,
